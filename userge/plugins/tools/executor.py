@@ -171,7 +171,7 @@ class Term:
 
     async def _read_stdout(self) -> None:
         while True:
-            line = ""
+            line = b''
             line1 = await self._process.stdout.readline()
             line += line1
             line2 = await self._process.stdout.readline()
