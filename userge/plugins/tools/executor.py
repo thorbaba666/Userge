@@ -121,10 +121,9 @@ async def term_(message: Message):
         await asyncio.sleep(0.5)
         if count >= 10:
             count = 0
-            for _ in range(0, 5):
-                bb = t_obj.read_line
-                out_data = f"<pre>{output}{bb}</pre>"
-                await message.try_to_edit(out_data, parse_mode='html')
+            bb = t_obj.read_line
+            out_data = f"<pre>{output}{bb}</pre>"
+            await message.try_to_edit(out_data, parse_mode='html')
     out_data = f"<pre>{output}{t_obj.get_output}</pre>"
     try:
         await message.edit_or_send_as_file(
@@ -172,13 +171,12 @@ class Term:
 
     async def _read_stdout(self) -> None:
         while True:
-            line = await self._process.stdout.readline()
+            line = await self._process.stdout.read()
             print(line.decode())
             if line:
                 self._stdout_line = line
-                print(self._stdout_line.decode())
+                #print(self._stdout_line.decode())
                 self._stdout += line
-                print(self._stdout.decode())
             else:
                 break
 
