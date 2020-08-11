@@ -176,7 +176,13 @@ class Term:
             line += line1
             line2 = await self._process.stdout.readline()
             line += line2
-            print(line.decode())
+            line3 = await self._process.stdout.readline()
+            line += line3
+            line4 = await self._process.stdout.readline()
+            line += line4
+            line5 = await self._process.stdout.readline()
+            line += line5
+            #print(line.decode())
             if line:
                 self._stdout_line = line
                 #print(self._stdout_line.decode())
