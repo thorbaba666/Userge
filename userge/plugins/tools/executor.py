@@ -123,7 +123,7 @@ async def term_(message: Message):
             count = 0
             bb = t_obj.read_line
             out_data = f"<pre>{output}{bb}</pre>"
-            await asyncio.sleep(8)
+            #await asyncio.sleep(8)
             await message.try_to_edit(out_data, parse_mode='html')
     out_data = f"<pre>{output}{t_obj.get_output}</pre>"
     try:
@@ -172,29 +172,29 @@ class Term:
 
     async def _read_stdout(self) -> None:
         while True:
-            line = b''
-            line1 = await self._process.stdout.readline()
-            line += line1
-            line2 = await self._process.stdout.readline()
-            line += line2
-            line3 = await self._process.stdout.readline()
-            line += line3
-            line4 = await self._process.stdout.readline()
-            line += line4
-            line5 = await self._process.stdout.readline()
-            line += line5
-            line6 = await self._process.stdout.readline()
-            line += line6
-            line7 = await self._process.stdout.readline()
-            line += line7
-            line8 = await self._process.stdout.readline()
-            line += line8
+            #line = b''
+            line = await self._process.stdout.readline()
+            #line += line1
+            #line2 = await self._process.stdout.readline()
+            #line += line2
+            #line3 = await self._process.stdout.readline()
+            #line += line3
+            #line4 = await self._process.stdout.readline()
+            #line += line4
+            #line5 = await self._process.stdout.readline()
+            #line += line5
+            #line6 = await self._process.stdout.readline()
+            #line += line6
+            #line7 = await self._process.stdout.readline()
+            #line += line7
+            #line8 = await self._process.stdout.readline()
+            #line += line8
             #print(line.decode())
             if line:
                 self._stdout_line = line
                 #print(self._stdout_line.decode())
                 self._stdout += line
-                line = b''
+                #line = b''
             else:
                 break
 
