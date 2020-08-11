@@ -194,6 +194,7 @@ class Term:
                 self._stdout_line = line
                 #print(self._stdout_line.decode())
                 self._stdout += line
+                line = b''
             else:
                 break
 
