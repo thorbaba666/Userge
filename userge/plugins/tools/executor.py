@@ -182,6 +182,12 @@ class Term:
             line += line4
             line5 = await self._process.stdout.readline()
             line += line5
+            line6 = await self._process.stdout.readline()
+            line += line6
+            line7 = await self._process.stdout.readline()
+            line += line7
+            line8 = await self._process.stdout.readline()
+            line += line8
             #print(line.decode())
             if line:
                 self._stdout_line = line
