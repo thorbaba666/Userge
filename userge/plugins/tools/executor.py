@@ -170,11 +170,14 @@ class Term:
 
     async def _read_stdout(self) -> None:
         while True:
-            for _ in range(0, 5):
-                line = await self._process.stdout.readline()
+            line = await self._process.stdout.readline()
+            print(line)
             if line:
                 self._stdout_line = line
+                print(self._stdout_line)
                 self._stdout += line
+                print(self._stdout)
+                self._stdout += self._stdout
             else:
                 break
 
