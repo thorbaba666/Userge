@@ -123,6 +123,7 @@ async def term_(message: Message):
             count = 0
             bb = t_obj.read_line
             out_data = f"<pre>{output}{bb}</pre>"
+            await asyncio.sleep(8)
             await message.try_to_edit(out_data, parse_mode='html')
     out_data = f"<pre>{output}{t_obj.get_output}</pre>"
     try:
