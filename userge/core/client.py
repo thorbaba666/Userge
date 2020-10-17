@@ -54,9 +54,7 @@ class _AbstractUserge(Methods, RawClient):
         """ returns client is bot or not """
         if self._bot is not None:
             return hasattr(self, 'ubot')
-        if Config.BOT_TOKEN:
-            return True
-        return False
+        return bool(Config.BOT_TOKEN)
 
     @property
     def uptime(self) -> str:
@@ -127,6 +125,9 @@ class _UsergeBot(_AbstractUserge):
 
 class Userge(_AbstractUserge):
     """ Userge, the userbot """
+
+    has_bot = bool(Config.BOT_TOKEN)
+
     def __init__(self, **kwargs) -> None:
         _LOG.info(_LOG_STR, "Setting Userge Configs")
         kwargs = {

@@ -7,12 +7,14 @@
 # All rights reserved.
 
 import re
+import asyncio
 from typing import Optional
 
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from pyrogram.errors import ChatSendMediaForbidden
-from pyrogram.errors.exceptions import FileIdInvalid, FileReferenceEmpty
-from pyrogram.errors.exceptions.bad_request_400 import BadRequest, ChannelInvalid, MediaEmpty
+from pyrogram.errors import (
+    ChatSendMediaForbidden, Forbidden, SlowmodeWait, PeerIdInvalid,
+    FileIdInvalid, FileReferenceEmpty, BadRequest, ChannelInvalid, MediaEmpty
+)
 
 from userge.core.ext import RawClient
 from userge import userge, Message, Config, versions, get_version, logging
@@ -37,7 +39,6 @@ async def alive(message: Message):
                            f"trying again... ERROR:: {set_err} ::")
             _set_data(True)
     markup = None
-    copy_ = "https://github.com/UsergeTeam/Userge/blob/master/LICENSE"
     output = f"""
 **⏱ uptime** : `{userge.uptime}`
 **💡 version** : `{get_version()}`
@@ -58,6 +59,7 @@ async def alive(message: Message):
 🎖 **{versions.__license__}** | 👥 **{versions.__copyright__}** | 🧪 **[Repo]({Config.UPSTREAM_REPO})**
 """
     else:
+        copy_ = "https://github.com/UsergeTeam/Userge/blob/master/LICENSE"
         markup = InlineKeyboardMarkup([
             [
                 InlineKeyboardButton(text="👥 UsergeTeam", url="https://github.com/UsergeTeam"),
@@ -71,7 +73,7 @@ async def alive(message: Message):
     try:
         await _send_alive(message, output, markup)
     except (FileIdInvalid, FileReferenceEmpty, BadRequest):
-        await _refresh_id()
+        await _refresh_id(message)
         await _send_alive(message, output, markup)
 
 
@@ -89,31 +91,42 @@ def _parse_arg(arg: bool) -> str:
 
 async def _send_alive(message: Message,
                       text: str,
-                      reply_markup: Optional[InlineKeyboardMarkup]) -> None:
+                      reply_markup: Optional[InlineKeyboardMarkup],
+                      recurs_count: int = 0) -> None:
     if not (_LOGO_ID and _LOGO_REF):
-        await _refresh_id()
+        await _refresh_id(message)
+    should_mark = None if _IS_STICKER else reply_markup
     try:
         await message.client.send_cached_media(chat_id=message.chat.id,
                                                file_id=_LOGO_ID,
                                                file_ref=_LOGO_REF,
                                                caption=text,
-                                               reply_markup=reply_markup)
+                                               reply_markup=should_mark)
         if _IS_STICKER:
-            raise MediaEmpty
-    except (MediaEmpty, ChatSendMediaForbidden):
+            raise ChatSendMediaForbidden
+    except SlowmodeWait as s_m:
+        await asyncio.sleep(s_m.x)
+        text = f'<b>{str(s_m).replace(" is ", " was ")}</b>\n\n{text}'
+        return await _send_alive(message, text, reply_markup)
+    except MediaEmpty:
+        if recurs_count >= 2:
+            raise ChatSendMediaForbidden
+        await _refresh_id(message)
+        return await _send_alive(message, text, reply_markup, recurs_count + 1)
+    except (ChatSendMediaForbidden, Forbidden):
         await message.client.send_message(chat_id=message.chat.id,
                                           text=text,
                                           reply_markup=reply_markup,
                                           disable_web_page_preview=True)
 
 
-async def _refresh_id() -> None:
+async def _refresh_id(message: Message) -> None:
     global _LOGO_ID, _LOGO_REF, _IS_STICKER  # pylint: disable=global-statement
     try:
-        media = await userge.get_messages(_CHAT, _MSG_ID)
-    except ChannelInvalid:
+        media = await message.client.get_messages(_CHAT, _MSG_ID)
+    except (ChannelInvalid, PeerIdInvalid, ValueError):
         _set_data(True)
-        return await _refresh_id()
+        return await _refresh_id(message)
     else:
         if media.sticker:
             _IS_STICKER = True

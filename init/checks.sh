@@ -15,8 +15,9 @@ _checkBashReq() {
 
 _checkPythonVersion() {
     log "Checking Python Version ..."
-    ( test -z $pVer || test $(sed 's/\.//g' <<< $pVer) -lt 380 ) \
-        && quit "You MUST have a python version of at least 3.8.0 !"
+    getPythonVersion
+    ( test -z $pVer || test $(sed 's/\.//g' <<< $pVer) -lt 3${minPVer}0 ) \
+        && quit "You MUST have a python version of at least 3.$minPVer.0 !"
     log "\tFound PYTHON - v$pVer ..."
 }
 
@@ -78,7 +79,7 @@ except Exception as e:
     for var in G_DRIVE_IS_TD LOAD_UNOFFICIAL_PLUGINS; do
         eval $var=$(tr "[:upper:]" "[:lower:]" <<< ${!var})
     done
-    local uNameAndPass=$(grep -oP "(?<=\/\/)(.+)(?=\@)" <<< $DATABASE_URL)
+    local uNameAndPass=$(grep -oP "(?<=\/\/)(.+)(?=\@cluster)" <<< $DATABASE_URL)
     local parsedUNameAndPass=$(runPythonCode '
 from urllib.parse import quote_plus
 print(quote_plus("'$uNameAndPass'"))')
