@@ -20,7 +20,23 @@
 
 # Userge 🔥
 
-[![Build Status](https://travis-ci.com/UsergeTeam/Userge.svg?branch=dev)](https://travis-ci.com/UsergeTeam/Userge) ![Python Version](https://img.shields.io/badge/python-3.8-lightgrey) ![Release](https://img.shields.io/github/v/release/UsergeTeam/Userge) ![Stars](https://img.shields.io/github/stars/UsergeTeam/Userge) ![Forks](https://img.shields.io/github/forks/UsergeTeam/Userge) ![Issues Open](https://img.shields.io/github/issues/UsergeTeam/Userge) ![Issues Closed](https://img.shields.io/github/issues-closed/UsergeTeam/Userge) ![PR Open](https://img.shields.io/github/issues-pr/UsergeTeam/Userge) ![PR Closed](https://img.shields.io/github/issues-pr-closed/UsergeTeam/Userge) ![Contributors](https://img.shields.io/github/contributors/UsergeTeam/Userge) ![Repo Size](https://img.shields.io/github/repo-size/UsergeTeam/Userge) ![License](https://img.shields.io/github/license/UsergeTeam/Userge) ![Commit Activity](https://img.shields.io/github/commit-activity/m/UsergeTeam/Userge) [![Plugins Repo!](https://img.shields.io/badge/Plugins%20Repo-!-orange)](https://github.com/UsergeTeam/Userge-Plugins) [![Join Channel!](https://img.shields.io/badge/Join%20Channel-!-red)](https://t.me/theUserge) [![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/UsergeTeam/Userge/?ref=repository-badge)
+[![Build Status](https://travis-ci.com/UsergeTeam/Userge.svg?branch=alpha)](https://travis-ci.com/UsergeTeam/Userge)
+![Python Version](https://img.shields.io/badge/python-3.8-lightgrey)
+![Release](https://img.shields.io/github/v/release/UsergeTeam/Userge)
+![Stars](https://img.shields.io/github/stars/UsergeTeam/Userge)
+![Forks](https://img.shields.io/github/forks/UsergeTeam/Userge)
+![Issues Open](https://img.shields.io/github/issues/UsergeTeam/Userge)
+![Issues Closed](https://img.shields.io/github/issues-closed/UsergeTeam/Userge)
+![PRs Open](https://img.shields.io/github/issues-pr/UsergeTeam/Userge)
+![PRs Closed](https://img.shields.io/github/issues-pr-closed/UsergeTeam/Userge)
+![Contributors](https://img.shields.io/github/contributors/UsergeTeam/Userge)
+![Repo Size](https://img.shields.io/github/repo-size/UsergeTeam/Userge)
+![License](https://img.shields.io/github/license/UsergeTeam/Userge)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/UsergeTeam/Userge)
+[![Plugins Repo!](https://img.shields.io/badge/Plugins%20Repo-!-orange)](https://github.com/UsergeTeam/Userge-Plugins)
+[![Join Channel!](https://img.shields.io/badge/Join%20Channel-!-red)](https://t.me/theUserge)
+[![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/UsergeTeam/Userge/?ref=repository-badge)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/UsergeTeam/Userge)
 
 > **Userge** is a Powerful , _Pluggable_ Telegram UserBot written in _Python_ using [Pyrogram](https://github.com/pyrogram/pyrogram).
 
@@ -46,7 +62,7 @@
   * split / combine
   * gadmin
   * plugin manager
-  * etc...
+  * ...and more
 * Channel & Group log support
 * Database support
 * Build-in help support
@@ -57,19 +73,28 @@
 ## Example Plugin 🤨
 
 ```python
-from userge import userge, Message
+from userge import userge, Message, filters
 
 LOG = userge.getLogger(__name__)  # logger object
-
 CHANNEL = userge.getCLogger(__name__)  # channel logger object
 
-@userge.on_cmd("test", about="help text to this command")  # adding handler and help text to .test command
-async def testing(message: Message):
+# add command handler
+@userge.on_cmd("test", about="help text to this command")
+async def test_cmd(message: Message):
    LOG.info("starting test command...")  # log to console
-
+   # some other stuff
    await message.edit("testing...", del_in=5)  # this will be automatically deleted after 5 sec
-
+   # some other stuff
    await CHANNEL.log("testing completed!")  # log to channel
+
+# add filters handler
+@userge.on_filters(filters.me & filters.private)  # filter my private messages
+async def test_filter(message: Message):
+   LOG.info("starting filter command...")
+   # some other stuff
+   await message.reply(f"you typed - {message.text}", del_in=5)
+   # some other stuff
+   await CHANNEL.log("filter executed!")
 ```
 
 ## Requirements 🥴
@@ -89,37 +114,18 @@ async def testing(message: Message):
 
 ## How To Deploy 👷
 
-* **[HEROKU](https://www.heroku.com/) Method** 🚀
+* With Heroku:
+  > **NOTE** : your can fill other vars as your need and they are optional. (settings -> reveal config vars)
+  * First click [**this**](https://heroku.com/deploy?template=https://github.com/UsergeTeam/Userge/tree/master)
+  * Fill `API_ID`, `API_HASH`, `DATABASE_URL` and `LOG_CHANNEL_ID` (**required**)
+  * Choose your [**MODE**](https://github.com/UsergeTeam/Userge#userge-modes-)
+  * Then fill other **non-required** vars as relevent to your **MODE**
+  * Finally **hit deploy** button
 
-  > First click [**this**](https://heroku.com/deploy?template=https://github.com/UsergeTeam/Userge/tree/master)
+* With Docker 🐳 
+    - [**See Detailed Guide**](resources/radmeDocker.md)
 
-  > Fill `API_ID`, `API_HASH`, `DATABASE_URL` and `LOG_CHANNEL_ID` (**required**)
-
-  > Choose your [**MODE**](https://github.com/UsergeTeam/Userge#userge-modes-)
-
-  > Then fill other **non-required** vars as relevent to your **MODE**
-
-  > Finally **hit deploy** button
-
-  > [**NOTE**] : your can fill other vars as your need and they are optional. (settings -> reveal config vars)
-
-* **Docker Method** 🐳 
-
-  1. Install Docker ( [Guide](https://docs.docker.com/engine/install/ubuntu/) )
-  2. Clone the repo
-      `git clone https://github.com/UsergeTeam/Userge.git`
-  3. `cd Userge`
-  4. Create the docker image
-      `docker build -t userge .`
-  5. `cd ..`
-  6. `wget https://raw.githubusercontent.com/UsergeTeam/Userge/alpha/config.env.sample -O config.env`
-  7. Edit the file with your text editor
-      `vi config.env`
-  8. Finally run the container
-      `docker run -dv "$(pwd)/config.env:/app/config.env" userge`
-
-* **Other Method** 🔧
-
+* With Git, Python and pip 🔧
   ```bash
   # clone the repo
   git clone https://github.com/UsergeTeam/Userge.git
@@ -150,7 +156,7 @@ async def testing(message: Message):
 
 ### Support & Discussions 👥
 
-> Head over to the [Discussion Group](https://t.me/slbotsbugs) and [Update Channel](https://t.me/theUserge)
+> Head over to the [Discussion Group](https://t.me/usergeot) and [Update Channel](https://t.me/theUserge)
 
 ### Project Credits 💆‍♂️
 

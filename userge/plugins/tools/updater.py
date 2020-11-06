@@ -37,7 +37,6 @@ async def check_update(message: Message):
     pull_from_repo = False
     push_to_heroku = False
     branch = "master"
-    dev_branch = "alpha"
     if "pull" in flags:
         pull_from_repo = True
         flags.remove("pull")
@@ -49,6 +48,7 @@ async def check_update(message: Message):
         flags.remove("push")
     if len(flags) == 1:
         branch = flags[0]
+        dev_branch = "alpha"
         if branch == dev_branch:
             await message.err('Can\'t update to unstable [alpha] branch. '
                               'Please use other branches instead !')
@@ -143,16 +143,7 @@ def _heroku_helper(sent: Message, repo: Repo, branch: str) -> None:
         if not edited or (now - start_time) > 3 or message:
             edited = True
             start_time = now
-            try:
-                loop.run_until_complete(sent.try_to_edit(f"{cur_msg}\n\n{prog}"))
-            except TypeError:
-                pass
+            userge.loop.create_task(sent.try_to_edit(f"{cur_msg}\n\n{prog}"))
+
     cur_msg = sent.text.html
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        repo.remote("heroku").push(refspec=f'{branch}:master',
-                                   progress=progress,
-                                   force=True)
-    finally:
-        loop.close()
+    repo.remote("heroku").push(refspec=f'{branch}:master', progress=progress, force=True)
