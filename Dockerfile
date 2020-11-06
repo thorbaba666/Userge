@@ -12,13 +12,7 @@ RUN apt -qq install -y --no-install-recommends \
     unzip \
     wget \
     ffmpeg \
-    jq \
-    aria2 \
-    busybox \
-    unrar \
-    tar \
-    python3 \
-    python3-pip
+    jq
 
 RUN wget https://rclone.org/install.sh
 RUN bash install.sh
