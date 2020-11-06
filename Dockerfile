@@ -12,7 +12,22 @@ RUN apt -qq install -y --no-install-recommends \
     unzip \
     wget \
     ffmpeg \
-    jq
+    jq \
+    aria2 \
+    busybox \
+    unrar \
+    tar \
+    python3 \
+    python3-pip
+
+RUN wget https://rclone.org/install.sh
+RUN bash install.sh
+
+RUN mkdir /app/gautam
+RUN wget -O /app/gautam/gclone.gz https://git.io/JJMSG
+RUN gzip -d /app/gautam/gclone.gz
+RUN chmod 0775 /app/gautam/gclone
+
 
 # install chrome
 RUN mkdir -p /tmp/ && \
