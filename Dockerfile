@@ -12,7 +12,12 @@ RUN apt -qq install -y --no-install-recommends \
     unzip \
     wget \
     ffmpeg \
-    jq
+    jq \
+    libxtst6 \
+    xvfb \
+    x11-xserver-utils \
+    libxi6 libgconf-2-4 \
+    libxcomposite-dev
 
 # install chrome
 RUN mkdir -p /tmp/ && \
